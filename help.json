@@ -1,0 +1,42 @@
+
+{
+    "title": "Basic command usage for Kano",
+    "description": "Type in any command below using the prefix **Kano** followed by the name of the command itself.",
+    "color": 7506394,
+    "fields": [
+        {
+        "name": "Kano create *group*",
+        "value": "Creates a new reminder using the name specified for group.  The value can be text values, which includes hyperlinks and formatted text.   Groups can be any text value and will be used as a key to store messages."
+        },
+        {
+        "name": "Kano add *group* *value*",
+        "value": "Adds in text entries for a group.  Group must be a value that already exists in the database."
+        },
+        {
+        "name": "Kano list",
+        "value": "List displays all group names that exists in the database.  Use this command to determine what fields already exists.",
+        "inline": true
+        },
+        {
+        "name": "Kano list *group*",
+        "value": "Displays all values that were stored within a particular group if it exists in the database.",
+        "inline": true
+        },
+        {
+        "name": "kano pop *group*",
+        "value": "Pop removes the last/most recent entry, from that group"
+        },
+        {
+        "name": "kano clear *group*",
+        "value": "Clears every single entry that was stored inside of a group"
+        },
+        {
+        "name": "kano delete *group*",
+        "value": "Deletes the entire group from the database. Can no longer be used to query all list items for that group once removed"
+        },
+        {
+        "name": "kano *help*",
+        "value": "Displays help on command usage for the Kano bo"
+        }
+    ]
+}

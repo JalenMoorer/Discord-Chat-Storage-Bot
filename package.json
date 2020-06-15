@@ -1,0 +1,23 @@
+{
+  "name": "kanobot",
+  "version": "1.0.0",
+  "description": "Discord bot that saves chat records in different lists",
+  "main": "mybot.js",
+  "dependencies": {
+    "discord.js": "^11.6.4",
+    "eslint": "^7.2.0",
+    "redis": "^3.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Discord",
+    "node.js",
+    "javascript",
+    "redis"
+  ],
+  "author": "Jalen Moorer",
+  "license": "ISC"
+}
