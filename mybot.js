@@ -45,7 +45,15 @@ async function redisSetHandler(data) {
 	return res;
 }
 
-client.on('ready', () => console.log('I am ready!'));
+client.on('ready', () => {
+	client.user.setPresence({
+        game: {
+            name: 'Ask Kano',
+            type: "Watching",
+            url: "https://discordapp.com/"
+        }
+    });
+});
 
 redisClient.on('connect', function() {
 	console.log('You are now connected');
@@ -53,7 +61,6 @@ redisClient.on('connect', function() {
 
 client.on('message', async msg => {
 	const args = msg.content.split(' ');
-	console.log(args);
 	const chatPrefix = args[0];
 	const command = args[1];
 	let value = args[2];
@@ -145,9 +152,7 @@ client.on('message', async msg => {
 	if (command === 'remove' && typeof value !== 'undefined') {
 		if (Object.exists(data, value)) {
 			let index = args[3] - 1;
-			console.log('INDEX IS', data[value][index] );
 			if (typeof data[value][index] !== 'undefined') {
-				console.log('Index is, ', data[value], index);
 				const item = data[value].splice(index,1);
 				msg.reply(`Item ${item} was removed from ${value}`);
 				redisSetHandler(data);
