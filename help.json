@@ -35,6 +35,10 @@
         "value": "Deletes the entire group from the database. Can no longer be used to query all list items for that group once removed"
         },
         {
+        "name": "kano remove *group* *index*",
+        "value": "Deletes an entry from the group specified by the index provided"
+        },
+        {
         "name": "kano *help*",
         "value": "Displays help on command usage for the Kano bo"
         }
