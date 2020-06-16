@@ -53,6 +53,7 @@ redisClient.on('connect', function() {
 
 client.on('message', async msg => {
 	const args = msg.content.split(' ');
+	console.log(args);
 	const chatPrefix = args[0];
 	const command = args[1];
 	let value = args[2];
@@ -135,6 +136,28 @@ client.on('message', async msg => {
 			delete data[value];
 			msg.reply(`Group ${value} was removed`);
 			redisSetHandler(data);
+		}
+		else {
+			msg.reply(`Group ${value} was not found`);
+		}
+	}
+
+	if (command === 'remove' && typeof value !== 'undefined') {
+		if (Object.exists(data, value)) {
+			let index = args[3] - 1;
+			console.log('INDEX IS', data[value][index] );
+			if (typeof data[value][index] !== 'undefined') {
+				console.log('Index is, ', data[value], index);
+				const item = data[value].splice(index,1);
+				msg.reply(`Item ${item} was removed from ${value}`);
+				redisSetHandler(data);
+			}
+			else {
+				msg.reply(`Index not found in group`);
+			}
+		}
+		else {
+			msg.reply(`Group ${value} was not found`);
 		}
 	}
 
