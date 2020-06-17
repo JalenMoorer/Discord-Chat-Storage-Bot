@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const { promisify } = require('util');
 const redis = require('redis');
+const translateText = require('./translate.js');
 const { prefix, token } = require('./config.json');
 const helpEmbed = require('./help.json');
 
@@ -47,12 +48,12 @@ async function redisSetHandler(data) {
 
 client.on('ready', () => {
 	client.user.setPresence({
-        game: {
-            name: 'Ask Kano',
-            type: "Watching",
-            url: "https://discordapp.com/"
-        }
-    });
+		game: {
+			name: 'Ask Kano | kano help',
+			type: 'Playing',
+			url: 'https://discordapp.com/',
+		},
+	});
 });
 
 redisClient.on('connect', function() {
@@ -151,14 +152,14 @@ client.on('message', async msg => {
 
 	if (command === 'remove' && typeof value !== 'undefined') {
 		if (Object.exists(data, value)) {
-			let index = args[3] - 1;
+			const index = args[3] - 1;
 			if (typeof data[value][index] !== 'undefined') {
-				const item = data[value].splice(index,1);
+				const item = data[value].splice(index, 1);
 				msg.reply(`Item ${item} was removed from ${value}`);
 				redisSetHandler(data);
 			}
 			else {
-				msg.reply(`Index not found in group`);
+				msg.reply('Index not found in group');
 			}
 		}
 		else {
@@ -169,6 +170,17 @@ client.on('message', async msg => {
 	if (command === 'help') {
 		msg.channel.send({ embed: helpEmbed });
 	}
+
+	if ((command === 'e!j' || command === 'j!e') && typeof value !== 'undefined') {
+		value = args.slice(2).join(' ');
+		translateText(command, value, msg);
+	}
 });
 
+
 client.login(token);
+
+// TODO
+// Loop through items that contains a hyperlink expression and posts them (or every item);
+// Add character limit for each item on the list
+// Refactor Code

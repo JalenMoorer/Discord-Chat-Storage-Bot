@@ -5,20 +5,28 @@
     "color": 7506394,
     "fields": [
         {
-        "name": "Kano create *group*",
+            "name": "kano j!e *text*",
+            "value": "Translates text provided from Japanese to English"
+        },
+        {
+            "name": "kano e!j *text*",
+            "value": "Translates text provided from English to Japanese"
+        },
+        {
+        "name": "kano create *group*",
         "value": "Creates a new reminder using the name specified for group.  The value can be text values, which includes hyperlinks and formatted text.   Groups can be any text value and will be used as a key to store messages."
         },
         {
-        "name": "Kano add *group* *value*",
+        "name": "kano add *group* *value*",
         "value": "Adds in text entries for a group.  Group must be a value that already exists in the database."
         },
         {
-        "name": "Kano list",
+        "name": "kano list",
         "value": "List displays all group names that exists in the database.  Use this command to determine what fields already exists.",
         "inline": true
         },
         {
-        "name": "Kano list *group*",
+        "name": "kano list *group*",
         "value": "Displays all values that were stored within a particular group if it exists in the database.",
         "inline": true
         },
