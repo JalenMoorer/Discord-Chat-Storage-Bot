@@ -13,6 +13,14 @@
             "value": "Translates text provided from English to Japanese"
         },
         {
+            "name": "kano notification enable",
+            "value": "Enables bot to notify all online users when someone currently streaming"
+        },
+        {
+            "name": "kano notification disable",
+            "value": "Disables bot from sending notifications during streaming"
+        },
+        {
         "name": "kano create *group*",
         "value": "Creates a new reminder using the name specified for group.  The value can be text values, which includes hyperlinks and formatted text.   Groups can be any text value and will be used as a key to store messages."
         },
