@@ -6,7 +6,13 @@ const translateEmbed = require('./translate.json');
 async function browserScreenshot(url) {
 
 	// 1. Launch the browser
-	const browser = await puppeteer.launch();
+	const browser = await puppeteer.launch({          
+		 defaultViewport: {
+			width: 1024,
+			height: 768,
+			isLandscape: true
+		}}
+	);
 	// 2. Open a new page
 	const page = await browser.newPage();
 
