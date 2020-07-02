@@ -11,6 +11,8 @@ const redisClient = redis.createClient();
 const getAsync = promisify(redisClient.get).bind(redisClient);
 const setAsync = promisify(redisClient.set).bind(redisClient);
 
+const file = new Discord.MessageAttachment('screenshot.png');
+
 Object.prototype.exists = function(obj, key) {
 	return typeof obj[key] !== 'undefined';
 };
@@ -173,7 +175,7 @@ client.on('message', async msg => {
 
 	if ((command === 'e!j' || command === 'j!e') && typeof value !== 'undefined') {
 		value = args.slice(2).join(' ');
-		translateText(command, value, msg);
+		translateText(command, value, msg, file);
 	}
 
 	if (command === 'notification' && typeof value !== 'undefined') {
