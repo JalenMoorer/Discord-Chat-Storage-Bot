@@ -1,55 +1,28 @@
 const Discord = require('discord.js');
-const { promisify } = require('util');
 const redis = require('redis');
-const translateText = require('./translate.js');
 const { prefix, token, textChannelIds } = require('./config.json');
-const helpEmbed = require('./help.json');
 
 const client = new Discord.Client();
 const redisClient = redis.createClient();
 
-const getAsync = promisify(redisClient.get).bind(redisClient);
-const setAsync = promisify(redisClient.set).bind(redisClient);
-
 const file = new Discord.MessageAttachment('screenshot.png');
+
+const add = require('./commands/add');
+const clear = require('./commands/clear');
+const create = require('./commands/create');
+const deletion = require('./commands/deletion');
+const help = require('./commands/help');
+const list = require('./commands/list');
+const notification = require('./commands/notification');
+const pop = require('./commands/pop');
+const remove = require('./commands/remove');
+const translate = require('./commands/translate');
+
+const { redisGetHandler } = require('./models/redis');
 
 Object.prototype.exists = function(obj, key) {
 	return typeof obj[key] !== 'undefined';
 };
-
-function getEmbeddedGroup(data, group) {
-	const groupTitle = group.toString();
-	const embed = new Discord.MessageEmbed()
-		.setTitle(groupTitle)
-		.setColor(0x00AE86)
-		.setDescription(`Information regarding the group ${groupTitle}`)
-		.setTimestamp();
-	data[group].forEach((item, i) => embed.addField(`# ${i + 1}`, item));
-	return embed;
-}
-
-function getEmbeddedAllGroups(data) {
-	const embed = new Discord.MessageEmbed()
-		.setTitle('Kano Reminder Groups')
-		.setColor(0x00AE86)
-		.setDescription('Here are all the items that are currently stored within Kano')
-		.setTimestamp();
-	Object.keys(data).forEach((item, i) => embed.addField(`# ${i + 1}`, item));
-	return embed;
-}
-
-async function redisGetHandler(key) {
-	const res = await getAsync(key);
-	return res;
-}
-
-async function redisSetHandler(key, value) {
-	if (typeof value !== 'string') {
-		value = JSON.stringify(value);
-	}
-	const res = await setAsync(key, value);
-	return res;
-}
 
 client.on('ready', () => {
 	client.user.setPresence({
@@ -75,121 +48,38 @@ client.on('message', async msg => {
 	let data = await redisGetHandler('data');
 	data = JSON.parse(data);
 
-	if (command === 'create' && typeof value !== 'undefined') {
-		if (Object.exists(data, value)) {
-			msg.channel.send('Group already exists in the list');
-			return;
-		}
-		else {
-			data[value] = [];
-			msg.reply(`${value} group was added`);
-			redisSetHandler('data', data);
-		}
-	}
-
-	if (command === 'add' && typeof value !== 'undefined') {
-		if (!Object.exists(data, value) || args.length < 4) {
-			msg.channel.send(`Group ${value} was not found or value was not provided`);
-			return;
-		}
-		else {
-			const group = value;
-			value = args.slice(3).join(' ');
-			data[group].push(value);
-			msg.reply(`${value} was added to the list`);
-			redisSetHandler('data', data);
-		}
-	}
-
-	if (command === 'list') {
-		if (Object.keys(data).length === 0) {
-			msg.channel.send('No items in the list to send');
-			return;
-		}
-		if (typeof value !== 'undefined') {
-			if (Object.exists(data, value)) {
-				const embed = getEmbeddedGroup(data, value);
-				msg.channel.send({ embed });
-			}
-			else {
-				msg.channel.send(`Group ${value} was not found on the list`);
-				return;
-			}
-		}
-		else {
-			const embed = getEmbeddedAllGroups(data);
-			msg.channel.send({ embed });
-		}
-	}
-
-	if (command === 'pop' && typeof value !== 'undefined') {
-		if(Object.exists(data, value)) {
-			data[value].pop();
-			msg.reply(`Last entry of ${value} was removed`);
-			redisSetHandler('data', data);
-		}
-	}
-
-	if (command === 'clear' && typeof value !== 'undefined') {
-		if (Object.exists(data, value)) {
-			data[value].length = 0;
-			msg.reply(`Group ${value} was cleared of all it's entries`);
-			redisSetHandler('data', data);
-		}
-		else {
-			msg.channel.send(`Group ${value} was not found`);
-		}
-	}
-
-	if (command === 'delete' && typeof value !== 'undefined') {
-		if (Object.exists(data, value)) {
-			delete data[value];
-			msg.reply(`Group ${value} was removed`);
-			redisSetHandler('data', data);
-		}
-		else {
-			msg.reply(`Group ${value} was not found`);
-		}
-	}
-
-	if (command === 'remove' && typeof value !== 'undefined') {
-		if (Object.exists(data, value)) {
-			const index = args[3] - 1;
-			if (typeof data[value][index] !== 'undefined') {
-				const item = data[value].splice(index, 1);
-				msg.reply(`Item ${item} was removed from ${value}`);
-				redisSetHandler('data', data);
-			}
-			else {
-				msg.reply('Index not found in group');
-			}
-		}
-		else {
-			msg.reply(`Group ${value} was not found`);
-		}
-	}
-
-	if (command === 'help') {
-		msg.channel.send({ embed: helpEmbed });
-	}
-
-	if ((command === 'e!j' || command === 'j!e') && typeof value !== 'undefined') {
-		value = args.slice(2).join(' ');
-		translateText(command, value, msg, file);
-	}
-
-	if (command === 'notification' && typeof value !== 'undefined') {
-		if (value === 'enable') {
-			await redisSetHandler('streamNotification', 'true');
-			msg.reply('Notfications enabled');
-		}
-		if (value === 'disable') {
-			await redisSetHandler('streamNotification', 'false');
-			msg.reply('Notfications disabled');
-		}
+	switch(command) {
+		case 'create':
+			create(data,value,msg);
+			break;
+		case 'add':
+			add(args,data,value,msg);
+			break;
+		case 'list':
+			list(data,value, msg);
+			break;
+		case 'pop':
+			pop(data,value,msg);
+			break;
+		case 'clear':
+			clear(data,value,msg);
+			break;
+		case 'delete':
+			deletion(data,value,msg);
+			break;
+		case 'remove':
+			remove(args,data,value,msg);
+			break;
+		case 'help':
+			help(msg)
+			break;
+		case 'e!j':
+		case 'j!e':
+			translate(command, value, msg, file);
+		case 'notification':
+			notification(value, msg);
 	}
 });
-
 
 client.on('voiceStateUpdate', async (oldState, newState) => {
 	const isStreaming = await redisGetHandler('streamNotification');
@@ -202,8 +92,9 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
 	if (!oldState.streaming && newState.streaming) {
 		// Find voice channel ID that matches from config to get text channel ID
 		const textChannelId = textChannelIds.find(item => item.voiceId === voiceChannelId);
+		const activity = game[0] || '';
 		client.channels.fetch(textChannelId.id).then(channel => {
-			if (game.length !== 0) {
+			if (game.length !== 0 && activity.name !== 'Custom Status') {
 				const activity = game[0];
 				channel.send(`@here ${user.username} is currently ${activity.type.toLowerCase()} ${activity.name}`);
 			}
@@ -215,7 +106,3 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
 });
 
 client.login(token);
-// TODO
-// Loop through items that contains a hyperlink expression and posts them (or every item);
-// Add character limit for each item on the list
-// Refactor Code
