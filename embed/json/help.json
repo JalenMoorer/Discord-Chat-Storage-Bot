@@ -55,6 +55,10 @@
         "value": "Deletes an entry from the group specified by the index provided"
         },
         {
+        "name": "kano morph *Japanese_Text*",
+        "value": "Splits apart Japanese sentences and displays information regarding it's grammar properties"
+        },
+        {
         "name": "kano *help*",
         "value": "Displays help on command usage for the Kano bo"
         }
