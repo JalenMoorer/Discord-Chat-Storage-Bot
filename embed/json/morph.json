@@ -1,0 +1,35 @@
+{
+    "title": "Word - ",
+    "description": "",
+    "url": "",
+    "color": "a652bb",
+    "fields": [
+        {
+            "name": "**Part of Speech:**",
+            "value": "test"
+        },
+        {
+            "name": "**Conjugation Form:**",
+            "value": "test"
+        },
+        {
+            "name": "**Conjugation:**",
+            "value": "test"
+        },
+        {
+            "name": "**Lexical Form:**",
+            "value": "test"
+        },
+        {
+        "name": "**Reading:**",
+        "value": "test"
+        },
+        {
+        "name": " **Pronunciation:**",
+        "value": "test"
+        }
+    ],
+    "footer": {
+        "text": ""
+    }
+}

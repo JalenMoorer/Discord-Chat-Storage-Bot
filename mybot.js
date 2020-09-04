@@ -17,6 +17,7 @@ const notification = require('./commands/notification');
 const pop = require('./commands/pop');
 const remove = require('./commands/remove');
 const translate = require('./commands/translate');
+const morph = require('./commands/morph');
 
 const { redisGetHandler } = require('./models/redis');
 
@@ -39,7 +40,7 @@ client.on('message', async msg => {
 	const args = msg.content.split(' ');
 	const chatPrefix = args[0];
 	const command = args[1];
-	let value = args[2];
+	const value = args[2];
 
 	if (chatPrefix !== prefix) {
 		return;
@@ -49,35 +50,42 @@ client.on('message', async msg => {
 	data = JSON.parse(data);
 
 	switch(command) {
-		case 'create':
-			create(data,value,msg);
-			break;
-		case 'add':
-			add(args,data,value,msg);
-			break;
-		case 'list':
-			list(data,value, msg);
-			break;
-		case 'pop':
-			pop(data,value,msg);
-			break;
-		case 'clear':
-			clear(data,value,msg);
-			break;
-		case 'delete':
-			deletion(data,value,msg);
-			break;
-		case 'remove':
-			remove(args,data,value,msg);
-			break;
-		case 'help':
-			help(msg)
-			break;
-		case 'e!j':
-		case 'j!e':
-			translate(command, value, msg, file);
-		case 'notification':
-			notification(value, msg);
+	case 'create':
+		create(data, value, msg);
+		break;
+	case 'add':
+		add(args, data, value, msg);
+		break;
+	case 'list':
+		list(data, value, msg);
+		break;
+	case 'pop':
+		pop(data, value, msg);
+		break;
+	case 'clear':
+		clear(data, value, msg);
+		break;
+	case 'delete':
+		deletion(data, value, msg);
+		break;
+	case 'remove':
+		remove(args, data, value, msg);
+		break;
+	case 'help':
+		help(msg);
+		break;
+	case 'e!j':
+	case 'j!e':
+		translate(command, value, msg, file);
+		break;
+	case 'notification':
+		notification(value, msg);
+		break;
+	case 'morph':
+		morph(value, msg);
+		break;
+	default:
+		break;
 	}
 });
 
@@ -95,7 +103,6 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
 		const activity = game[0] || '';
 		client.channels.fetch(textChannelId.id).then(channel => {
 			if (game.length !== 0 && activity.name !== 'Custom Status') {
-				const activity = game[0];
 				channel.send(`@here ${user.username} is currently ${activity.type.toLowerCase()} ${activity.name}`);
 			}
 			else {
