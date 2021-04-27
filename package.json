@@ -8,7 +8,7 @@
     "discord.js": "^12.2.0",
     "eslint": "^7.2.0",
     "puppeteer": "^5.0.0",
-    "redis": "^3.0.2",
+    "redis": "^3.1.1",
     "update": "^0.7.4"
   },
   "devDependencies": {},
